@@ -49,244 +49,274 @@ Originally **`richmemo_design.lpk`** was a single file, containing IDE specific 
 
 ## Font Parameters
 
-Font parameters are generally represented by TFontParams record. The type is used to describe **rich** attributes of the font. Some attributes goes beyond the scope of TFont class, thus an extra type was necessary. However, most of the TFont related data types are reused (i.e. TFontStyles).
+Font parameters are generally represented by `TFontParams` record. The type is used to describe **rich** attributes of the font. Some attributes goes beyond the scope of `TFont` class, thus an extra type was necessary. However, most of the TFont related data types are reused (i.e. `TFontStyles`).
 
-- Name - name of the font (family).
-- Size - size of the font in points (passing a negative value might produce unexpected results).
-- Color - color of the font.
-- Style - font styles, including Bold, italic, strike-through, underline.
-- HasBkClr - boolean flag, if the text for the should have background color (if true, BkColor field is used, otherwise BkColor is ignored). Transparency is not supported.
-- BkColor - background (aka highlight) color for the text.
-- VScriptPos - vertical adjustment for the text
+- `Name` - name of the font (family).
+- `Size` - size of the font in points (passing a negative value might produce unexpected results).
+- `Color` - color of the font.
+- `Style` - font styles, including Bold, italic, strike-through, underline.
+- `HasBkClr` - boolean flag, if the text for the should have background color (if true, `BkColor` field is used, otherwise `BkColor` is ignored). Transparency is not supported.
+- `BkColor` - background (aka highlight) color for the text.
+- `VScriptPos` - vertical adjustment for the text
     
     [![richmemo Subsuper.png](https://wiki.freepascal.org/images/7/7e/richmemo_Subsuper.png)](https://wiki.freepascal.org/File:richmemo_Subsuper.png)
     
-    - vpNormal - no special position.
-    - vpSubscript - the text is subscript.
-    - vpSuperscript - the text is superscript.
+- `vpNormal` - no special position.
+- `vpSubscript` - the text is subscript.
+- `vpSuperscript` - the text is superscript.
 
 The actual vertical offset of super/sub scripts depends on OS implementation and currently cannot be controlled.
 
-You can assign FontParams from TFont structure. For that you'll need to use GetFontParams(afont: TFont) function. Note, most of LCL controls have TFont set to "default" values. These are not actual values, but rather an indication that control's default font should be used (similar to crDefault for TColor).
+You can assign `FontParams` from `TFont` structure. For that you'll need to use `GetFontParams(afont: TFont)` function. Note, most of LCL controls have `TFont` set to "default" values. These are not actual values, but rather an indication that control's default font should be used (similar to `crDefault` for `TColor`).
 
-GetFontParams function resolves "Default" font name and returns the actual font family name.
+`GetFontParams` function resolves "Default" font name and returns the actual font family name.
 
 ## Methods
 
-### SetTextAttributes
+### `SetTextAttributes`
 
-procedure SetTextAttributes(TextStart, TextLen: Integer; AFont: TFont);
+```pascal
+procedure SetTextAttributes(TextStart, TextLen: Integer; AFont: TFont);`
+```
 
-- TextStart : Integer - the first character to be modified
-- TextLen : Integer - number of characters to be modified
-- AFont : TFont - a font that should be applied to the part of the text
+- `TextStart: Integer` - the first character to be modified
+- `TextLen: Integer` - number of characters to be modified
+- `AFont: TFont` - a font that should be applied to the part of the text
 
-procedure SetTextAttributes(TextStart, TextLen: Integer; const TextParams: TFontParams);
+```pascal
+procedure SetTextAttributes(TextStart, TextLen: Integer; const TextParams: TFontParams);`
+```
 
-- TextStart : Integer - the first character to be modified
-- TextLen : Integer - number of characters to be modified
-- TextParams : TFontParams - font parameters to be set
+- `TextStart: Integer` - the first character to be modified
+- `TextLen: Integer` - number of characters to be modified
+- `TextParams: TFontParams` - font parameters to be set
 
-SetTextureAttributes methods are changing specified text range style. Font parameters is passed in both methods, by AFont parameter (LCL TFont object) or by TFontParams (declared at RichMemo).
+`SetTextureAttributes` methods are changing specified text range style. Font parameters is passed in both methods, by `AFont` parameter (LCL `TFont` object) or by `TFontParams` (declared at RichMemo).
 
-Setting text attributes does not change current selection. If it's necessary to modify the style of currently selected text, you should SelStart and SelLength as a text range values:
+Setting text attributes does not change current selection. If it's necessary to modify the style of currently selected text, you should `SelStart` and `SelLength` as a text range values:
 
+```pascal
 RichMemo1.SetTextAttributes(RichMemo1.SelStart, RichMemo1.SelLength, FontDialog1.Font);
+```
 
-### GetTextAttributes
+### `GetTextAttributes`
 
+```pascal
 function GetTextAttributes(TextStart: Integer; var TextParams: TFontParams): Boolean; virtual;
+```
 
-- TextStart : Integer - the character position to be queried for font parameters
-- var TextParams : TFontParams - output value, filled with charachter's font attributes. If the method fails and returns false, record's field values is undefined.
+- `TextStart: Integer` - the character position to be queried for font parameters
+- `var TextParams: TFontParams` - output value, filled with charachter's font attributes. If the method fails and returns false, record's field values is undefined.
 
-Fill font params of the character, at TextStart position. Method returns True if textstart is valid character position, and False overwise.
+Fill font params of the character, at `TextStart` position. Method returns `True` if textstart is valid character position, and `False` overwise.
 
-### GetStyleRange
+### `GetStyleRange`
 
+```pascal
 function GetStyleRange(CharPos: Integer; var RangeStart, RangeLen: Integer): Boolean; virtual;
+```
 
 Returns a range of characters that share the same font parameters, i.e. all characters in the range has the same font name, size, color and styles.
 
-- CharPos : Integer - a character that belongs to the style range. It's not necessary for this position to be at the begining on the style range. It can be in the middle on in the end of the style range. The first character position is returned by RangeStart parameter.
-- var RangeStart : Integer - the first character in the range
-- var RangeLen : Integer - number of characthers in the range
+- `CharPos: Integer` - a character that belongs to the style range. It's not necessary for this position to be at the begining on the style range. It can be in the middle on in the end of the style range. The first character position is returned by `RangeStart` parameter.
+- `var RangeStart: Integer` - the first character in the range
+- `var RangeLen: Integer` - number of characthers in the range
 
-The method returns true if successed. the method returns false, if CharPos is incorrect value - more than available characters or some other error.
+The method returns true if successed. the method returns false, if `CharPos` is incorrect value - more than available characters or some other error.
 
-### CharAtPos
+### `CharAtPos`
 
-function CharAtPos(x,y: Integer): Integer; virtual;
+```pascal
+function CharAtPos(x, y: Integer): Integer; virtual;
+```
 
-Returns zero-based character offset (not UTF8 position). Returns -1 if fails.
+Returns zero-based character offset (not UTF8 position). Returns `-1` if fails.
 
-- x, y - is a point in the client area of the RichMemo control.
+- `x`, `y` - is a point in the client area of the RichMemo control.
 
-The method is aware of scrolling state of the control. Thus two calls to CharAtPos(0,0) might return different values if scroll positions is changed between calls. See "examples/hittest" for the sample of usage.
+The method is aware of scrolling state of the control. Thus two calls to `CharAtPos(0,0)` might return different values if scroll positions is changed between calls. See "examples/hittest" for the sample of usage.
 
-If specified x,y would be out of the content of RichMemo the return value is undefined. It is left up to widgetset to either return -1 or closes character available.
+If specified `x`,`y` would be out of the content of RichMemo the return value is undefined. It is left up to widgetset to either return `-1` or closes character available.
 
-### SetRangeColor
+### `SetRangeColor`
 
+```pascal
 procedure SetRangeColor(TextStart, TextLength: Integer; FontColor: TColor);
+```
 
-The method sets color of characters in the specified range to the FontColor. Other font parameters (name, size, styles) are left unchanged.
+The method sets color of characters in the specified range to the `FontColor`. Other font parameters (name, size, styles) are left unchanged.
 
-- TextStart: Integer - the first character in the range
-- TextLength: Integer - number of characters in the range
-- FontColor: TColor - color that should be set
+- `TextStart: Integer` - the first character in the range
+- `TextLength: Integer` - number of characters in the range
+- `FontColor: TColor` - color that should be set
 
-### SetRangeParams
+### `SetRangeParams`
 
-    procedure SetRangeParams(TextStart, TextLength: Integer; ModifyMask: TTextModifyMask;
-      const fnt: TFontParams; AddFontStyle, RemoveFontStyle: TFontStyles); overload;
+```pascal
+procedure SetRangeParams(TextStart, TextLength: Integer; ModifyMask: TTextModifyMask;
+  const fnt: TFontParams; AddFontStyle, RemoveFontStyle: TFontStyles); overload;
+```
 
 The method changes font parameters in the specified range.
 
-- TextStart - the first character in the range
-- TextLength - number of characters in the range
-- ModifyMask - shows what exact font attributes must be updated The mask accepts any combination of the following values:
-    - tmm_Color - font color would be modified (fnt.Color field must be populated)
-    - tmm_Name - font name would be modified (fnt.Name field must be populated)
-    - tmm_Size - font size would be modified (fnt.Size field must be populated)
-    - tmm_Styles - font styles would be modified as specified by AddFontStyle, RemoveFontStyle parameters
-    - tmm_BackColor - text highlight (background) color would be modified. (fnt.HasBkClr and fnt.BkColor fields must be populated )
+- `TextStart` - the first character in the range
+- `TextLength` - number of characters in the range
+- `ModifyMask` - shows what exact font attributes must be updated The mask accepts any combination of the following values:
+    - `tmm_Color` - font color would be modified (`fnt.Color` field must be populated)
+    - `tmm_Name` - font name would be modified (`fnt.Name` field must be populated)
+    - `tmm_Size` - font size would be modified (`fnt.Size` field must be populated)
+    - `tmm_Styles` - font styles would be modified as specified by `AddFontStyle`, `RemoveFontStyle` parameters
+    - `tmm_BackColor` - text highlight (background) color would be modified. (`fnt.HasBkClr` and `fnt.BkColor` fields must be populated )
     - Sending an empty mask will cause the method to return without making any changes.
-- fnt - font parameters that are going to be used, depending on the ModifyMask values.
-- AddFontStyle - set of styles that should be applied to the range (used only if tmm_Styles in ModifyMask, otherwise ignored)
-- RemoveFontStyle - set of font style should should be removed from the range (used only if tmm_Styles in ModifyMask, otherwise ignored)
+- `fnt` - font parameters that are going to be used, depending on the ModifyMask values.
+- `AddFontStyle` - set of styles that should be applied to the range (used only if `tmm_Styles` in `ModifyMask`, otherwise ignored)
+- `RemoveFontStyle` - set of font style should should be removed from the range (used only if `tmm_Styles` in `ModifyMask`, otherwise ignored)
 
+```pascal
 procedure SetRangeParams(TextStart, TextLength: Integer;
     ModifyMask: TTextModifyMask; const FontName: String; 
     FontSize: Integer; FontColor: TColor; 
     AddFontStyle, RemoveFontStyle: TFontStyles);
+```
 
-The overloaded version of the method. It's just a wrapper around the parameter using TFontParams structure. The method doesn't support changing of background color, you should use the TFontParams version
+The overloaded version of the method. It's just a wrapper around the parameter using `TFontParams` structure. The method doesn't support changing of background color, you should use the `TFontParams` version
 
-- FontName - font name that should set (used only if tmm_Name in ModifyMask, otherwise ignored)
-- FontColor - font color that should set (used only if tmm_Color in ModifyMask, otherwise ignored)
+- `FontName` - font name that should set (used only if tmm_Name in ModifyMask, otherwise ignored)
+- `FontColor` - font color that should set (used only if tmm_Color in ModifyMask, otherwise ignored)
 
 For example, if the following code is used
 
-  RichMemo1.SetRangeParams ( 
-     RichMemo1.SelStart, RichMemo1.SelLength,
-     \[tmm_Styles, tmm_Color\], // changing Color and Styles only
-     '',  // this is font name - it's not used, thus we can leave it empty
-     0,  // this is font size - it's font size, we can leave it empty
-     clGreen, // making all the text in the selected region green color
-     \[fsBold, fsItalic\],  // adding Bold and Italic Styles
-     \[\]
-  );
+```pascal
+RichMemo1.SetRangeParams ( 
+ RichMemo1.SelStart, RichMemo1.SelLength,
+ [tmm_Styles, tmm_Color], // changing Color and Styles only
+ '',  // this is font name - it's not used, thus we can leave it empty
+ 0,  // this is font size - it's font size, we can leave it empty
+ clGreen, // making all the text in the selected region green color
+ [fsBold, fsItalic],  // adding Bold and Italic Styles
+ []
+);
+```
 
-### GetParaAlignment
+### `GetParaAlignment`
 
 Gets paragraph alignment
 
-function GetParaAlignment(TextStart: Integer; var AAlign: TParaAlignment): Boolean;
+`function GetParaAlignment(TextStart: Integer; var AAlign: TParaAlignment): Boolean;`
 
-- TextStart - the position of the character that's belongs to the paragraph
-- AAlign - gets alignment of a paragraph.
+- `TextStart` - the position of the character that's belongs to the paragraph
+- `AAlign` - gets alignment of a paragraph.
 
-**Note**:
+>**Note**:
+>
+>- Win32 - full-width Justification doesn't work on Windows XP and earlier.
+>- OSX - due to Carbon limitation, this is not working in Carbon, but works for Cocoa widgetset.
 
-- Win32 - full-width Justification doesn't work on Windows XP and earlier.
-- OSX - due to Carbon limitation, this is not working in Carbon, but works for Cocoa widgetset.
-
-### SetParaAlignment
+### `SetParaAlignment`
 
 Sets paragraph alignent
 
+```pascal
 procedure SetParaAlignment(TextStart, TextLen: Integer; AAlign: TParaAlignment);
+```
 
-**Note**:
+>**Note**:
+>
+>- Win32 - full-width Justification doesn't work on Windows XP and earlier.
+>- OSX - due to Carbon limitation, this is not working in Carbon, but works for Cocoa widgetset. It's also need to loaded that the correct alignment would be loaded from RTF file
 
-- Win32 - full-width Justification doesn't work on Windows XP and earlier.
-- OSX - due to Carbon limitation, this is not working in Carbon, but works for Cocoa widgetset. It's also need to loaded that the correct alignment would be loaded from RTF file
-
-### GetParaMetric
+### `GetParaMetric`
 
 Returns paragraph metrics for a given paragraph
 
 [![richmemo parametric.PNG](https://wiki.freepascal.org/images/3/38/richmemo_parametric.PNG)](https://wiki.freepascal.org/File:richmemo_parametric.PNG)
 
-- FirstLine - an offset for the first line (in points), of the paragraph from the beginning of control
-- TailIndent - an offset for each line (in points), except for the first line, of the paragraph from the end of the control
-- HeadIndent - an offset for each line (in points) of the paragraph from the end of the control
-- SpaceBefore - additional space before paragraph (in points)
-- SpaceAfter - additional space after paragraph (in points)
-- LineSpacing - a factor used to calculate line spacing between lines in the paragraph. The factor is applied to Font size (tallest in the line), not the line height. Thus it's matching CSS's line-height property. Note that normal line-spacing is 1.2. I.e. font of 12 pt size, an actual lines spacing set to 1.2, would result in 14pt line height.
+- `FirstLine` - an offset for the first line (in points), of the paragraph from the beginning of control
+- `TailIndent` - an offset for each line (in points), except for the first line, of the paragraph from the end of the control
+- `HeadIndent` - an offset for each line (in points) of the paragraph from the end of the control
+- `SpaceBefore` - additional space before paragraph (in points)
+- `SpaceAfter` - additional space after paragraph (in points)
+- `LineSpacing` - a factor used to calculate line spacing between lines in the paragraph. The factor is applied to Font size (tallest in the line), not the line height. Thus it's matching CSS's line-height property. Note that normal line-spacing is 1.2. I.e. font of 12 pt size, an actual lines spacing set to 1.2, would result in 14pt line height.
     - not supported in WinXP or earlier
     - most of the system would not allow if linespacing is set to less than 1.2. The value would be ignored and they'd default to 1.2
 
-**Note**
+>**Note**
+>
+>- RichEdit paragraph settings are specified in pixels, not points, so you'll need to either convert these sizes yourself or use `RichMemoHelper` methods
+>- the notation of "Left"/"Right" offsets is avoided to prevent confusion for RTL.
 
-- RichEdit paragraph settings are specified in pixels, not points, so you'll need to either convert these sizes yourself or use RichMemoHelper methods
-- the notation of "Left"/"Right" offsets is avoided to prevent confusion for RTL.
-
+```pascal
 function GetParaMetric(TextStart: Integer; var AMetric: TParaMetric): Boolean; &lt;/source
+```
 
-===SetParaMetric===
-Sets paragraph metrics
-&lt;source lang="delphi"&gt;procedure SetParaMetric(TextStart, TextLen: Integer; const AMetric: TParaMetric);
+### `SetParaMetric`
 
-It's recommended to use InitParaMetric function in order to initialize TParaMetric structure. Otherwise zeroing structure out is by it size (i.e. FillChar(m, sizeof(TParaMetric), 0) is sufficient. If TParaMetric values are received from GetParaMetric call, then the structure is considered to be initialized properly.
+```pascal
+procedure SetParaMetric(TextStart, TextLen: Integer; const AMetric: TParaMetric);
+```
 
-### GetParaRange
+It's recommended to use `InitParaMetric` function in order to initialize `TParaMetric` structure. Otherwise zeroing structure out is by it size (i.e. `FillChar(m, sizeof(TParaMetric), 0)` is sufficient. If `TParaMetric` values are received from `GetParaMetric` call, then the structure is considered to be initialized properly.
+
+### `GetParaRange`
 
 Returns character range for a paragraph. The paragraph is identified by a character.
 
-  function GetParaRange(CharOfs: Integer; var ParaRange: TParaRange): Boolean; 
-  function GetParaRange(CharOfs: Integer; var TextStart, TextLength: Integer): Boolean;
+```pascal
+function GetParaRange(CharOfs: Integer; var ParaRange: TParaRange): Boolean; 
+function GetParaRange(CharOfs: Integer; var TextStart, TextLength: Integer): Boolean;
+```
 
-CharOfs - is a character that belongs to a paragraph which range is returned. TParaRange - is a structure that returns 3 fields
+`CharOfs` - is a character that belongs to a paragraph which range is returned. `TParaRange` - is a structure that returns 3 fields
 
-- start - the first character in the paragraph
-- lengthNoBr - the length of the paragraph, excluding the line break character
-- length - the length of the paragrpah, including the line break, if present the last line in the control doesn't contain a line break character, thus length = lengthNoBr value.
+- `start` - the first character in the paragraph
+- `lengthNoBr` - the length of the paragraph, excluding the line break character
+- `length` - the length of the paragrpah, including the line break, if present the last line in the control doesn't contain a line break character, thus `length = lengthNoBr` value.
 
-### SetParaTabs
+### `SetParaTabs`
 
 Sets the set of tab stops to paragraphs in the specified length.
 
-  procedure SetParaTabs(TextStart, TextLen: Integer; const AStopList: TTabStopList);
+```pascal
+procedure SetParaTabs(TextStart, TextLen: Integer; const AStopList: TTabStopList);
+```
 
-- TextStart
-- TextLen
-- AStopList - the structure that contains an array of tab stops.
-    - Count - specifies the number of initialized elements.
-    - Tabs - array contains the description of each tab stop, consisting of an Offset and Alignment.
-        - Offset - the tab point offset in points (from the left side of the control)
-        - Align - the alignment of the tab stop (tabLeft - default one, tabCenter, tabRight, tabDecimal).
+- `TextStart`
+- `TextLen`
+- `AStopList` - the structure that contains an array of tab stops.
+    - `Count` - specifies the number of initialized elements.
+    - `Tabs` - array contains the description of each tab stop, consisting of an `Offset` and `Alignment`.
+        - `Offset` - the tab point offset in points (from the left side of the control)
+        - `Align` - the alignment of the tab stop (`tabLeft` - default one, `tabCenter`, `tabRight`, `tabDecimal`).
 
-**Notes**
+>**Notes**
+>
+>Renamefest
+>Prior to r4140 TTabAlignment enum values were taLeft, taCenter, taRight, taDecimal,but it did collide with Classes.TAlignment declarations. Thus the suffix was changed.
+>
+>win32
+>allows no more that 32 tabs
+>
+>gtk2
+>only tabLeft align is supported
+>
+>carbon
+>not implemented
 
-Renamefest
-
-Prior to r4140 TTabAlignment enum values were taLeft, taCenter, taRight, taDecimal,but it did collide with Classes.TAlignment declarations. Thus the suffix was changed.
-
-win32
-
-allows no more that 32 tabs
-
-gtk2
-
-only tabLeft align is supported
-
-carbon
-
-not implemented
-
-### GetParaTabs
+### `GetParaTabs`
 
 Gets the tab stops array. If no specific tabs were specified (widget default tab stops) AStopList count would be set to 0.
 
- function GetParaTabs(CharOfs: Integer; var AStopList: TTabStopList): Boolean;
+```pascal
+function GetParaTabs(CharOfs: Integer; var AStopList: TTabStopList): Boolean;
+```
 
-### SetParaNumbering
+### `SetParaNumbering`
 
 Sets paragraphs automatic numbering and styles, such as bullets
 
+```pascal
 procedure SetParaNumbering(TextStart, TextLen: Integer; const ANumber: TParaNumbering); virtual;
+```
 
 - **TextStart** \- the character of the the first paragraph to apply the style too
 - **TextLength** \- the number of characters that paragraph properties should be modified
@@ -294,7 +324,7 @@ procedure SetParaNumbering(TextStart, TextLen: Integer; const ANumber: TParaNumb
 
 - **style** \- the style of numbering
 
-Note: for cross-platform compatibility, it's recommended to use either **pnNone**, **pnBullet**, **pnNumber** or **pnCustomChar**. RTF provides more support for numbering, yet not every platform rich-text widgetset supports them
+>**Note:** for cross-platform compatibility, it's recommended to use either **pnNone**, **pnBullet**, **pnNumber** or **pnCustomChar**. RTF provides more support for numbering, yet not every platform rich-text widgetset supports them
 
 - **Indent** \- offset in points
 - **CustomChar** \- custom character to be used as a "bullet" for each paragraph. Note, it's a WIDECHAR not UTF8
@@ -304,11 +334,13 @@ Note: for cross-platform compatibility, it's recommended to use either **pnNone*
 
 for initializing the structure you can use InitParaNumbering() or InitParaNumber() functions. Also using Default() would work too
 
-### SetRangeParaParams
+### `SetRangeParaParams`
 
 Sets paragraph metrics selectively
 
+```pascal
 procedure SetRangeParaParams(TextStart, TextLength: Integer; ModifyMask: TParaModifyMask; const ParaMetric: TParaMetric);
+```
 
 - TextStart - the character of the the first paragraph to apply the style too
 - TextLength - the number of characters that paragraph properties should be modified
@@ -321,9 +353,11 @@ procedure SetRangeParaParams(TextStart, TextLength: Integer; ModifyMask: TParaMo
     - pmm_LineSpacing - line spacing within paragraph. LineSpace field of ParaMetric must be initialized
 - ParaMetric - the structure containing the values to be set. Only fields specified by ModifyMask should be initialized
 
-### LoadRichText
+### `LoadRichText`
 
+```pascal
 function LoadRichText(Source: TStream): Boolean; virtual;
+```
 
 - Source: TStream - a stream to read richtext data from
 
@@ -331,9 +365,11 @@ The method loads RTF enocded data from the specified stream. Returns true if suc
 
 The content of TRichMemo is completely replaced by the content on the source stream. Current text selection is reset.
 
-### SaveRichText
+### `SaveRichText`
 
+```pascal
 function SaveRichText(Dest: TStream): Boolean; virtual;
+```
 
 - Source: TStream - a stream to read richtext data from
 
@@ -381,10 +417,12 @@ The returned ATextStart and ATextLength values are suitable for use in SelStart 
   
 If you need to extract the found text, you should use GetText() method (passing ATextStart and ATextLength values).
 
-### GetText, GetUText
+### `GetText`, `GetUText`
 
-    function GetText(TextStart, TextLength: Integer): String;
-    function GetUText(TextStart, TextLength: Integer): UnicodeString;
+```pascal
+function GetText(TextStart, TextLength: Integer): String;
+function GetUText(TextStart, TextLength: Integer): UnicodeString;
+```
 
 - TextStart: Integer - a character position to start extract from. (0 - is the first character in the text).
 - TextLength: Integer - length (in characters, not bytes) of the text to extract
@@ -397,7 +435,7 @@ Current selection would not be affected by the operation. (If you see the select
 
 You should not consider the efficiency of either method. For example, WinAPI internally operates with UTF16 characters, thus GetUText() **might** be more efficient for it. While Gtk2 operates UTF8 and calling GetText() **might** be more efficient for it. Instead of thinking about underlying system, you should be considering the needs of your task.
 
-### Redo
+### `Redo`
 
     procedure Redo;
 
@@ -407,19 +445,19 @@ You can always call [CanRedo](https://wiki.freepascal.org/RichMemo#CanRedo) to c
 
 ## Properties
 
-### ZoomFactor
+### `ZoomFactor`
 
 property ZoomFactor: double
 
 Read/Write property. Controls zooming of the RichMemo content. 1.0 - is no-zoom. Less than &lt; 1.0 - decrease zoom, more than 1.0 - increasing zooming. If 0 is set - value defaults to 1.0 zoom factor (no zoom).
 
-### HideSelection
+### `HideSelection`
 
 property HideSelection: Boolean default false
 
 Read/Write property. If True RichMemo selection is hidden if the control is not focused. If False, the selection is shown all the time.
 
-### CanRedo
+### `CanRedo`
 
 property CanRedo: Boolean
 
@@ -616,6 +654,7 @@ Alternative example for simple coloring (tested on Windows):
 
 If you need mixed coloring then this is an example that will add a new line with several different colored words (tested on Windows):
 
+```pascal
 procedure TForm1.Button3Click(Sender: TObject);
     procedure AddColorStr(s: string; const col: TColor = clBlack; const NewLine: boolean = true);
     begin
@@ -637,17 +676,17 @@ procedure TForm1.Button3Click(Sender: TObject);
         SelText   := '';
       end;
     end;
-  begin
-    AddColorStr('Black, ');
-    AddColorStr('Green, ', clGReen, false);
-    AddColorStr('Blue, ', clBlue, false);
-    AddColorStr('Red', clRed, false);
-  end;
+begin
+  AddColorStr('Black, ');
+  AddColorStr('Green, ', clGReen, false);
+  AddColorStr('Blue, ', clBlue, false);
+  AddColorStr('Red', clRed, false);
+end;
 
- Black, Green, Blue, Red
- Black, Green, Blue, Red
- Black, Green, Blue, Red
-
+Black, Green, Blue, Red
+Black, Green, Blue, Red
+Black, Green, Blue, Red
+```
 ## Markup Language Parsing
 
 [![](https://wiki.freepascal.org/images/4/4b/mlparse.png)](https://wiki.freepascal.org/File:mlparse.png)
@@ -699,6 +738,7 @@ Win32RichMemo provides a global variable NCPaint. It's a handler of non-client a
 
 In order to let system do NCPaint only (i.e. LCL implementation is causing issues or new windows updated RichEdit to draw borders properly), you can change NCPaint value at runtime, resetting it to nil
 
+```pascal
 uses
   RichMemo, ..{$ifdef WINDOWS}Win32RichMemo{$endif}
 
@@ -706,6 +746,7 @@ initialization
   {$ifdef WINDOWS}
   Win32RichMemo.NCPaint:=nil;
   {$endif}
+```
 
 You can also provide your own implementation of NCPaint. However, if you implement proper animated theme drawing, please provide patch.
 
