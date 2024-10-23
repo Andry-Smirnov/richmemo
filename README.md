@@ -106,7 +106,7 @@ function GetTextAttributes(TextStart: Integer; var TextParams: TFontParams): Boo
 ```
 
 - `TextStart: Integer` - the character position to be queried for font parameters
-- `var TextParams: TFontParams` - output value, filled with charachter's font attributes. If the method fails and returns false, record's field values is undefined.
+- `var TextParams: TFontParams` - output value, filled with charachter's font attributes. If the method fails and returns `false`, record's field values is undefined.
 
 Fill font params of the character, at `TextStart` position. Method returns `True` if textstart is valid character position, and `False` overwise.
 
@@ -181,20 +181,20 @@ procedure SetRangeParams(TextStart, TextLength: Integer;
 
 The overloaded version of the method. It's just a wrapper around the parameter using `TFontParams` structure. The method doesn't support changing of background color, you should use the `TFontParams` version
 
-- `FontName` - font name that should set (used only if tmm_Name in ModifyMask, otherwise ignored)
-- `FontColor` - font color that should set (used only if tmm_Color in ModifyMask, otherwise ignored)
+- `FontName` - font name that should set (used only if `tmm_Name` in `ModifyMask`, otherwise ignored)
+- `FontColor` - font color that should set (used only if `tmm_Color` in `ModifyMask`, otherwise ignored)
 
 For example, if the following code is used
 
 ```pascal
-RichMemo1.SetRangeParams ( 
- RichMemo1.SelStart, RichMemo1.SelLength,
- [tmm_Styles, tmm_Color], // changing Color and Styles only
- '',  // this is font name - it's not used, thus we can leave it empty
- 0,  // this is font size - it's font size, we can leave it empty
- clGreen, // making all the text in the selected region green color
- [fsBold, fsItalic],  // adding Bold and Italic Styles
- []
+RichMemo1.SetRangeParams( 
+  RichMemo1.SelStart, RichMemo1.SelLength,
+  [tmm_Styles, tmm_Color],                  // changing Color and Styles only
+  '',                                       // this is font name - it's not used, thus we can leave it empty
+  0,                                        // this is font size - it's font size, we can leave it empty
+  clGreen,                                  // making all the text in the selected region green color
+  [fsBold, fsItalic],                       // adding Bold and Italic Styles
+  []
 );
 ```
 
@@ -290,21 +290,21 @@ procedure SetParaTabs(TextStart, TextLen: Integer; const AStopList: TTabStopList
 
 >**Notes**
 >
->Renamefest
+>**Renamefest**
 >Prior to r4140 TTabAlignment enum values were taLeft, taCenter, taRight, taDecimal,but it did collide with Classes.TAlignment declarations. Thus the suffix was changed.
 >
->win32
+>**win32**
 >allows no more that 32 tabs
 >
->gtk2
+>**gtk2**
 >only tabLeft align is supported
 >
->carbon
+>**carbon**
 >not implemented
 
 ### `GetParaTabs`
 
-Gets the tab stops array. If no specific tabs were specified (widget default tab stops) AStopList count would be set to 0.
+Gets the tab stops array. If no specific tabs were specified (widget default tab stops) `AStopList` count would be set to `0`.
 
 ```pascal
 function GetParaTabs(CharOfs: Integer; var AStopList: TTabStopList): Boolean;
@@ -318,21 +318,21 @@ Sets paragraphs automatic numbering and styles, such as bullets
 procedure SetParaNumbering(TextStart, TextLen: Integer; const ANumber: TParaNumbering); virtual;
 ```
 
-- **TextStart** \- the character of the the first paragraph to apply the style too
-- **TextLength** \- the number of characters that paragraph properties should be modified
-- **TParaNumbering** \- the structure describing the paragraph numbering information
+- `TextStart` - the character of the the first paragraph to apply the style too
+- `TextLength` - the number of characters that paragraph properties should be modified
+- `TParaNumbering` - the structure describing the paragraph numbering information
 
-- **style** \- the style of numbering
+- `style` - the style of numbering
 
->**Note:** for cross-platform compatibility, it's recommended to use either **pnNone**, **pnBullet**, **pnNumber** or **pnCustomChar**. RTF provides more support for numbering, yet not every platform rich-text widgetset supports them
+>**Note:** for cross-platform compatibility, it's recommended to use either `pnNone`, `pnBullet`, `pnNumber` or `pnCustomChar`. RTF provides more support for numbering, yet not every platform rich-text widgetset supports them
 
-- **Indent** \- offset in points
-- **CustomChar** \- custom character to be used as a "bullet" for each paragraph. Note, it's a WIDECHAR not UTF8
-- **NumberStart** \- the initial number in numbering of paragraphs. Use for **pnNumber** only. Used to support "split" numbered lists
-- **SepChar**
-- **ForceNewNum** \- if true and Style is pnNumber, NumberStart is used for the new numbering
+- `Indent` - offset in points
+- `CustomChar` - custom character to be used as a "bullet" for each paragraph. Note, it's a WIDECHAR not UTF8
+- `NumberStart` - the initial number in numbering of paragraphs. Use for `pnNumber` only. Used to support "split" numbered lists
+- `SepChar`
+- `ForceNewNum` - if `true` and `Style` is `pnNumber`, `NumberStart` is used for the new numbering
 
-for initializing the structure you can use InitParaNumbering() or InitParaNumber() functions. Also using Default() would work too
+for initializing the structure you can use `InitParaNumbering()` or `InitParaNumber()` functions. Also using `Default()` would work too
 
 ### `SetRangeParaParams`
 
@@ -342,16 +342,16 @@ Sets paragraph metrics selectively
 procedure SetRangeParaParams(TextStart, TextLength: Integer; ModifyMask: TParaModifyMask; const ParaMetric: TParaMetric);
 ```
 
-- TextStart - the character of the the first paragraph to apply the style too
-- TextLength - the number of characters that paragraph properties should be modified
-- ModifyMask - masks the identifies what para metric should be set for each paragraph within TextStart..TextLength block. Other characters will be left unmodified. Members of the set are
-    - pmm_FirstLine - changes the first line indentation. FirstLine field of ParaMetric must be initialized
-    - pmm_HeadIndent - changes the heading paragraph indentation. HeadIndent field of ParaMetric must be initialized
-    - pmm_TailIndent - changes the trail paragraph indentation. TailIndent field of ParaMetric must be initialized
-    - pmm_SpaceBefore - changes the space preceding . SpaceBefore field of ParaMetric must be initialized
-    - pmm_SpaceAfter - changes the space after (below) the paragraph. SpaceAfter field of ParaMetric must be initialized
-    - pmm_LineSpacing - line spacing within paragraph. LineSpace field of ParaMetric must be initialized
-- ParaMetric - the structure containing the values to be set. Only fields specified by ModifyMask should be initialized
+- `TextStart` - the character of the the first paragraph to apply the style too
+- `TextLength` - the number of characters that paragraph properties should be modified
+- `ModifyMask` - masks the identifies what para metric should be set for each paragraph within `TextStart`..`TextLength` block. Other characters will be left unmodified. Members of the set are
+    - `pmm_FirstLine` - changes the first line indentation. `FirstLine` field of `ParaMetric` must be initialized
+    - `pmm_HeadIndent` - changes the heading paragraph indentation. `HeadIndent` field of `ParaMetric` must be initialized
+    - `pmm_TailIndent` - changes the trail paragraph indentation. `TailIndent` field of `ParaMetric` must be initialized
+    - `pmm_SpaceBefore` - changes the space preceding . `SpaceBefore` field of `ParaMetric` must be initialized
+    - `pmm_SpaceAfter` - changes the space after (below) the paragraph. `SpaceAfter` field of `ParaMetric` must be initialized
+    - `pmm_LineSpacing` - line spacing within paragraph. `LineSpace` field of `ParaMetric` must be initialized
+- `ParaMetric` - the structure containing the values to be set. Only fields specified by `ModifyMask` should be initialized
 
 ### `LoadRichText`
 
@@ -359,11 +359,11 @@ procedure SetRangeParaParams(TextStart, TextLength: Integer; ModifyMask: TParaMo
 function LoadRichText(Source: TStream): Boolean; virtual;
 ```
 
-- Source: TStream - a stream to read richtext data from
+- `Source: TStream` - a stream to read richtext data from
 
-The method loads RTF enocded data from the specified stream. Returns true if success, and false otherwise. If source is nil, the method returns false
+The method loads RTF enocded data from the specified stream. Returns `true` if success, and `false` otherwise. If source is `nil`, the method returns ```
 
-The content of TRichMemo is completely replaced by the content on the source stream. Current text selection is reset.
+The content of `TRichMemo` is completely replaced by the content on the source stream. Current text selection is reset.
 
 ### `SaveRichText`
 
@@ -371,51 +371,55 @@ The content of TRichMemo is completely replaced by the content on the source str
 function SaveRichText(Dest: TStream): Boolean; virtual;
 ```
 
-- Source: TStream - a stream to read richtext data from
+- `Source: TStream` - a stream to read richtext data from
 
-The method saves RTF enocded data to the specified stream. Returns true if success, and false otherwise. If source is nil, the method returns false
+The method saves RTF enocded data to the specified stream. Returns `true` if success, and `false` otherwise. If source is `nil`, the method returns `false`
 
-Current state of TRichMemo is unchanged after the method returns
+Current state of `TRichMemo` is unchanged after the method returns
 
-### Search
+### `Search`
 
+```pascal
 function Search(const ANiddle: string; Start, Len: Integer; const SearchOpt: TSearchOptions): Integer;
+```
 
-- ANiddle: string - a text to search for
-- Start: Integer - a character position to start search from, if -1 or 0 search from the start
-- Len: Integer - length (in characters, not bytes) of the text to search for the niddle.
-- SearchOpt: TSearchOptions
-    - soMatchCase - case sensitive search
-    - soBackward - searching from the end of the document to the character identified by "Start" parameter
-    - soWholeWord - searching for the whole word
+- `ANiddle: string` - a text to search for
+- `Start: Integer` - a character position to start search from, if `-1` or `0` search from the start
+- `Len: Integer` - length (in characters, not bytes) of the text to search for the niddle.
+- `SearchOpt: TSearchOptions`
+    - `soMatchCase` - case sensitive search
+    - `soBackward` - searching from the end of the document to the character identified by `Start` parameter
+    - `soWholeWord` - searching for the whole word
 
-The method returns the character position of the found sub-string. The position is suitable for use in SelStart property. However, might not be usable for the direct Copy operation, if Unicode characters are present in the code. Instead UTF8Copy should be used.
+The method returns the character position of the found sub-string. The position is suitable for use in `SelStart` property. However, might not be usable for the direct `Copy` operation, if Unicode characters are present in the code. Instead `UTF8Copy` should be used.
 
-If the ANiddle was not found in the text, -1 is returned
+If the `ANiddle` was not found in the text, `-1` is returned
 
+```pascal
 function Search(const ANiddle: string; Start, Len: Integer; const SearchOpt: TSearchOptions;
   var TextStart, TextLength: Integer): Boolean;
+```
 
 (The method is introduced with r5115)
 
-- ANiddle: string - a text to search for
-- Start: Integer - a character position to start search from, if -1 or 0 search from the start
-- Len: Integer - length (in characters, not bytes) of the text to search for the niddle.
-- SearchOpt: TSearchOptions
-    - soMatchCase - case sensitive search
-    - soBackward - searching from the end of the document to the character identified by "Start" parameter
-    - soWholeWord - searching for the whole word
-- (output) ATextStart - a position of the text found (in characters)
-- (output) ATextLength - length of the text found (in characters (cursor positions!))
+- `ANiddle: string` - a text to search for
+- `Start: Integer` - a character position to start search from, if `-1` or `0` search from the start
+- `Len: Integer` - length (in characters, not bytes) of the text to search for the niddle.
+- `SearchOpt: TSearchOptions`
+    - `soMatchCase` - case sensitive search
+    - `soBackward` - searching from the end of the document to the character identified by `Start` parameter
+    - `soWholeWord` - searching for the whole word
+- (output) `ATextStart` - a position of the text found (in characters)
+- (output) `ATextLength` - length of the text found (in characters (cursor positions!))
 
-The method returns the true if searched sub-string is found, false otherwise.
+The method returns the `true` if searched sub-string is found, `false` otherwise.
 
-The returned ATextStart and ATextLength values are suitable for use in SelStart and SelLength properties.
+The returned `ATextStart` and ATextLength values are suitable for use in SelStart and SelLength properties.
 
-**Note**: for complex scripts, the found text might be exactly the same as the sub-string searched. The search behavior (on complex scripts) is widgetset specific. Thus searching for the same string on different widgetsets (i.e. win32 or gtk2) might produce different results. If you need the same results and don't get them, please create a bug report.
+> **Note**: for complex scripts, the found text might be exactly the same as the sub-string searched. The search behavior (on complex scripts) is widgetset specific. Thus searching for the same string on different widgetsets (i.e. win32 or gtk2) might produce different results. If you need the same results and don't get them, please create a bug report.
 
   
-If you need to extract the found text, you should use GetText() method (passing ATextStart and ATextLength values).
+If you need to extract the found text, you should use `GetText()` method (passing `ATextStart` and `ATextLength` values).
 
 ### `GetText`, `GetUText`
 
@@ -424,95 +428,109 @@ function GetText(TextStart, TextLength: Integer): String;
 function GetUText(TextStart, TextLength: Integer): UnicodeString;
 ```
 
-- TextStart: Integer - a character position to start extract from. (0 - is the first character in the text).
-- TextLength: Integer - length (in characters, not bytes) of the text to extract
+- `TextStart: Integer` - a character position to start extract from. (`0` - is the first character in the text).
+- `TextLength: Integer` - length (in characters, not bytes) of the text to extract
 
-GetText() returns UTF8 sub-string
+`GetText()` returns UTF8 sub-string
 
-GetUText() returns UTF16 sub-string
+`GetUText()` returns UTF16 sub-string
 
 Current selection would not be affected by the operation. (If you see the selection affected, please report as an issue).
 
-You should not consider the efficiency of either method. For example, WinAPI internally operates with UTF16 characters, thus GetUText() **might** be more efficient for it. While Gtk2 operates UTF8 and calling GetText() **might** be more efficient for it. Instead of thinking about underlying system, you should be considering the needs of your task.
+You should not consider the efficiency of either method. For example, WinAPI internally operates with UTF16 characters, thus `GetUText()` **might** be more efficient for it. While Gtk2 operates UTF8 and calling `GetText()` **might** be more efficient for it. Instead of thinking about underlying system, you should be considering the needs of your task.
 
 ### `Redo`
 
-    procedure Redo;
+```pascal
+procedure Redo;
+```
 
 The method redos the last change [undone](http://lazarus-ccr.sourceforge.net/docs/lcl/stdctrls/tcustomedit.undo.html) previously.
 
-You can always call [CanRedo](https://wiki.freepascal.org/RichMemo#CanRedo) to check, if there're any actions can be redone.
+You can always call [`CanRedo`](https://wiki.freepascal.org/RichMemo#CanRedo) to check, if there're any actions can be redone.
 
 ## Properties
 
 ### `ZoomFactor`
 
+```pascal
 property ZoomFactor: double
+```
 
-Read/Write property. Controls zooming of the RichMemo content. 1.0 - is no-zoom. Less than &lt; 1.0 - decrease zoom, more than 1.0 - increasing zooming. If 0 is set - value defaults to 1.0 zoom factor (no zoom).
+Read/Write property. Controls zooming of the RichMemo content. `1.0` - is no-zoom. Less than < `1.0` - decrease zoom, more than `1.0` - increasing zooming. If `0` is set - value defaults to `1.0` zoom factor (no zoom).
 
 ### `HideSelection`
 
+```pascal
 property HideSelection: Boolean default false
+```
 
-Read/Write property. If True RichMemo selection is hidden if the control is not focused. If False, the selection is shown all the time.
+Read/Write property. If `True` RichMemo selection is hidden if the control is not focused. If `False`, the selection is shown all the time.
 
 ### `CanRedo`
 
+```pascal
 property CanRedo: Boolean
+```
 
-If True, there're actions in Undo queue that can be redone. If False, there are no actions in Undo queue that can be redone. Calling to Redo won't have any effect.
+If `True`, there're actions in Undo queue that can be redone. If `False`, there are no actions in Undo queue that can be redone. Calling to Redo won't have any effect.
 
 ### Transparent
 
 [![richmemo transparent.png](https://wiki.freepascal.org/images/b/ba/richmemo_transparent.png)](https://wiki.freepascal.org/File:richmemo_transparent.png)
 
+```pascal
 property Transparent: Boolean
+```
 
-If True, the background of richmemo is not filled with any color, leaving any underlying controls or windows to be visible. (Suggested to be used with TImage that would provide the background) If False, (default) the background is filled with a solid color
+If `True`, the background of richmemo is not filled with any color, leaving any underlying controls or windows to be visible. (Suggested to be used with TImage that would provide the background) If `False`, (default) the background is filled with a solid color
 
-Note that the property might not affect "border" style of the the richmemo. You need to set BorderStyle to bsNone in order to disable it. For macOS this also hides the focus ring (when the control is focused)
+Note that the property might not affect "border" style of the the richmemo. You need to set `BorderStyle` to `bsNone` in order to disable it. For macOS this also hides the focus ring (when the control is focused)
 
 - Supported by Win32, Qt5 and Cocoa
 
 ### Rtf
 
+```pascal
 property Rtf: String
+```
 
-[![RtfEditor.PNG](https://wiki.freepascal.org/images/b/b8/RtfEditor.PNG)](https://wiki.freepascal.org/File:RtfEditor.PNG)
+[![`RtfEditor.PNG`](https://wiki.freepascal.org/images/b/b8/RtfEditor.PNG)](https://wiki.freepascal.org/File:RtfEditor.PNG)
 
 Read/Write property that allows to read or write Rich-Text Formatted (RTF) text to the whole control. The intent of the property is to have an ability to set Rich-Text in design time, however the property would work in run-time as well.
 
 If then property value is an empty string then Lines property is used as a plain text to initialize control value in load-time.
 
-**Note:** The property is available in TRichMemo class only, it's not available (or even implemented in anyway) in TCustomRichMemo class. It is recommended to use LoadRichText/SaveRichText in order to modify the content of the page, just because they could consume less memory, than copying the whole rich-text into the memory.
+>**Note:** The property is available in TRichMemo class only, it's not available (or even implemented in anyway) in TCustomRichMemo class. It is recommended to use LoadRichText/SaveRichText in order to modify the content of the page, just because they could consume less memory, than copying the whole rich-text into the memory.
 
-**Cross-platform and Forward Compatibility Note:** \- currently the property is implemented based on the widgetset providede Rich-text read/write routines. It is very likely that in near future it would be changed to used RichMemo read/write RTF stream code only. The issue is with older systems might not support the latest version of RTF.
+>**Cross-platform and Forward Compatibility Note:** - currently the property is implemented based on the widgetset providede Rich-text read/write routines. It is very likely that in near future it would be changed to used RichMemo read/write RTF stream code only. The issue is with older systems might not support the latest version of RTF.
 
 So right now, you might run into an issue, If you create a project in Gtk2 and save the richmemo is design time containing Unicode characters. Then if you try to load it on the XP machine and would use widgetset native loader, you might see characters missing or rendered improperly. Changing to the usage of RichMemo RTF loader/saver will prevent this issue from happening. Currently you can also avoid it by registering RichMemo loaders (call RegisterRTFLoader, RegisterRTFSaver procedures in project initialization, before any RichMemo is loaded)
 
 ## Events
 
-### OnSelectionChange
+### `OnSelectionChange`
 
+```pascal
 property OnSelectionChange: TNotifyEvent
 TNotifyEvent = procedure (Sender: TObject) of object;
+```
 
 The event is fired whenever, selection is changed within RichMemo, either programmatically or due to the user action.
 
-## TRichEditForMemo
+## `TRichEditForMemo`
 
-The class helper that implements RichEdit programmatic interface. The helper is declared at RichEditHelpers unit, so you have to add it to the uses section. Helpers are available in FPC 2.6.0 or later.
+The class helper that implements RichEdit programmatic interface. The helper is declared at `RichEditHelpers` unit, so you have to add it to the uses section. Helpers are available in FPC 2.6.0 or later.
 
 ### Methods
 
-#### FindText
+#### `FindText`
 
 Searches a given range in the text for a target string
 
 ### Properties
 
-#### SelAttributes
+#### `SelAttributes`
 
 Reads/Modifies character attributes of the current selection.
 
@@ -520,99 +538,114 @@ Reads/Modifies character attributes of the current selection.
 
 Reads/Modifies paragraph attributes of the current selection.
 
-### RichMemoUtils
+### `RichMemoUtils`
 
 The unit is introduced to add some useful OS-specific features for handling working with RichMemo
 
-#### InsertImageFromFile
+#### `InsertImageFromFile`
 
+```pascal
 function InsertImageFromFile (const ARichMemo: TCustomRichMemo; APos: Integer;
      const FileNameUTF8: string;
      const AImgSize: TSize
  ): Boolean = nil;
+```
 
-_Disclaimer: the function would insert an image file into RichMemo (if implemented by the widgetset) But in a very inefficient way. The image would be read again and the memory would be re-allocated for the image every time. So please, don't use it for smileys in your chat instant messaging. A better API (with data caching) is considered. (That's why this method is not part of TCustomRichMemo class)._
+>**Disclaimer**: the function would insert an image file into `RichMemo` (if implemented by the widgetset) But in a very inefficient way. The image would be read again and the memory would be re-allocated for the image every time. So please, don't use it for smileys in your chat instant messaging. A better API (with data caching) is considered. (That's why this method is not part of `TCustomRichMemo` class).
 
-- APos - position in the text
-- AImgSize - size to be inserted in POINTS, not pixels!. If both cx and cy are 0, the image would not be resized at all. If only one cx, cy is zero results are undefined.
+- `APos` - position in the text
+- `AImgSize` - size to be inserted in POINTS, not pixels!. If both cx and cy are 0, the image would not be resized at all. If only one cx, cy is zero results are undefined.
 
-There's also an utility function **InsertImageFromFileNoResize** that calls InsertImageFromFile, passing size as 0.
+There's also an utility function **`InsertImageFromFileNoResize`** that calls `InsertImageFromFile`, passing size as `0`.
 
 An example of use
 
- procedure TForm1.Button1Click(Sender: TObject);
- begin
+```pascal
+procedure TForm1.Button1Click(Sender: TObject);
+begin
   // running a dialog to select a picture to insert
   if OpenDialog1.Execute then 
     // inserting the picture at the current RichMemo cursor position
     InsertImageFromFileNoResize(RichMemo1, RichMemo1.SelStart, OpenDialog1.FileName);
- end;
+end;
+```
 
-### InsertStyledText,InsertColorStyledText,InsertFontText
+### `InsertStyledText`, `InsertColorStyledText`, `InsertFontText`
 
-The set of functions that simplify appending and replacing of styled text. The specified style of the text is applied on the insertion. The common rule for all functions, if InsPos (insertion position) is negative - the text is appended to the end. In order to insert the text in the beginning of the test InsPos should set to 0.
+The set of functions that simplify appending and replacing of styled text. The specified style of the text is applied on the insertion. The common rule for all functions, if `InsPos` (insertion position) is negative - the text is appended to the end. In order to insert the text in the beginning of the test `InsPos` should set to `0`.
 
-The inserted text is not forced to be on a new line or add a new line. You might want to add LineFeed character to TestUTF8 parameter, if you want the inserted text to cause a new line to be started.
+The inserted text is not forced to be on a new line or add a new line. You might want to add `LineFeed` character to `TestUTF8` parameter, if you want the inserted text to cause a new line to be started.
 
+```pascal
 procedure InsertStyledText(
   const ARichMemo: TCustomRichMemo; 
   const TextUTF8: String; 
   AStyle: TFontStyles;
   InsPos : Integer = -1 )
+```
 
-InsertStyledText inserts the styled text at the specified position.
+`InsertStyledText` inserts the styled text at the specified position.
 
+```pascal
 procedure InsertColorStyledText(
   const ARichMemo: TCustomRichMemo; 
   const TextUTF8: String; 
   AColor: TColor; 
   AStyle: TFontStyles;
   InsPos : Integer = -1 )
+```
 
-InsertColorStyledText inserts the text with specified style and color at the specified position. to the end of the RichMemo
+`InsertColorStyledText` inserts the text with specified style and color at the specified position. to the end of the RichMemo
 
+```pascal
 procedure InsertFontText(
   const ARichMemo: TCustomRichMemo; 
   const TextUTF8: String; 
   const prms: TFontParams;     
   InsPos : Integer = -1 )
+```
 
 InsertFontText inserts the text and applies specified FontParams to it.
 
-You might want to create a class helper to implement these functions as methods for RichMemo. Beware, if you're using [Delphi-compatibility helper](https://wiki.freepascal.org/RichMemo#(Delphi)_RichEdit_like_interface) \- you might right into a conflict.
+You might want to create a class helper to implement these functions as methods for `RichMemo`. Beware, if you're using [Delphi-compatibility helper](https://wiki.freepascal.org/RichMemo#(Delphi)_RichEdit_like_interface) - you might right into a conflict.
 
 ## Frequently Asked Questions
 
-### Using RichMemo in Shared Libraries
+### Using `RichMemo` in Shared Libraries
 
-[Issue #17412](http://bugs.freepascal.org/view.php?id=17412) If you need to use the component in a shared library, you might need to add -fPIC key to the compiler option of "the package" and the "project".
+[Issue #17412](http://bugs.freepascal.org/view.php?id=17412) If you need to use the component in a shared library, you might need to add `-fPIC` key to the compiler option of "the package" and the "project".
 
-## (Delphi) RichEdit like interface
+## (Delphi) `RichEdit` like interface
 
-[Issue #14632](http://bugs.freepascal.org/view.php?id=14632) A typical problem is porting an existing code that's using RichEdit from Delphi. RichMemo interface doesn't match RichEdit in many ways. But there're two ways to handle that:
+[Issue #14632](http://bugs.freepascal.org/view.php?id=14632) A typical problem is porting an existing code that's using `RichEdit` from Delphi. `RichMemo` interface doesn't match `RichEdit` in many ways. But there're two ways to handle that:
 
-- you can either create a sub-class from TCustomRichMemo (or RichMemo) and implement Delphi RichEdit methods;
-- you can use RichMemoHelpers unit (fpc 2.6.0 or later required) and use methods provided by class Helpers that should; Currently SelAttributes and Paragraph properties are implemented.
+- you can either create a sub-class from `TCustomRichMemo` (or `RichMemo`) and implement Delphi `RichEdit` methods;
+- you can use `RichMemoHelpers` unit (fpc 2.6.0 or later required) and use methods provided by class `Helpers` that should; Currently `SelAttributes` and `Paragraph` properties are implemented.
 
-uses ... RichMemo, RichMemoHelpers;
+```pascal
+uses
+ ...
+ RichMemo, RichMemoHelpers;
 
 TForm = class
-  RichMemo1 : TRichMemo;
+  RichMemo1: TRichMemo;
    
   // SelAttributes property is not available in the base class
   // but added by a helper defined at RichMemoHelpers unit
-RichMemo1.SelAttributes.Name := 'Courier New';
+  RichMemo1.SelAttributes.Name := 'Courier New';
+```
 
 ## Append mixed color text at the end of the RichMemo
 
 If you just need simple coloring then here is an example that will each time add a new line with random color (tested on Windows):
 
-  procedure TForm1.Button1Click(Sender: TObject);
-  var
-    i, j: integer;
-    str: string;
-  begin
-    with Richmemo1 do
+```pascal
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  i, j: integer;
+  str: string;
+begin
+  with Richmemo1 do
     begin
       str := 'Newline text';
       i := Length(Lines.Text) - Lines.Count; // cr as #10#13 is counted only once so subtract it once
@@ -620,45 +653,48 @@ If you just need simple coloring then here is an example that will each time add
       Lines.Add(str);
       SetRangeColor(i, j, Round(random * $FFFFFF));
     end;
-  end;
+end;
 
- Newline text
- NewLine text
- NewLine text
+Newline text
+NewLine text
+NewLine text
+```
 
 Alternative example for simple coloring (tested on Windows):
 
-  procedure TForm1.Button2Click(Sender: TObject);
-  begin
-    with RichMemo1 do
+```pascal
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  with RichMemo1 do
     begin
       Lines.Add('Line in red');
-      SetRangeColor(Length(Lines.Text) - Length(Lines\[Lines.Count - 1\]) - Lines.Count - 1, Length(Lines\[Lines.Count - 1\]), clRed);
-  
-      Lines.Add('Line in blue');
-      SetRangeColor(Length(Lines.Text) - Length(Lines\[Lines.Count - 1\]) - Lines.Count - 1, Length(Lines\[Lines.Count - 1\]), clBlue);
-  
-      Lines.Add('Normal line.');
-      Lines.Add('Normal line.');
-  
-      Lines.Add('Line in green ');
-      SetRangeColor(Length(Lines.Text) - Length(Lines\[Lines.Count - 1\]) - Lines.Count - 1, Length(Lines\[Lines.Count - 1\]), clGreen);
-    end;
-  end;
+      SetRangeColor(Length(Lines.Text) - Length(Lines[Lines.Count - 1]) - Lines.Count - 1, Length(Lines[Lines.Count - 1]), clRed);
 
- Line in red
- Line in blue
- Normal line.
- Normal line.
- Line in green
+      Lines.Add('Line in blue');
+      SetRangeColor(Length(Lines.Text) - Length(Lines[Lines.Count - 1]) - Lines.Count - 1, Length(Lines[Lines.Count - 1]), clBlue);
+
+      Lines.Add('Normal line.');
+      Lines.Add('Normal line.');
+
+      Lines.Add('Line in green ');
+      SetRangeColor(Length(Lines.Text) - Length(Lines[Lines.Count - 1]) - Lines.Count - 1, Length(Lines[Lines.Count - 1]), clGreen);
+    end;
+end;
+
+Line in red
+Line in blue
+Normal line.
+Normal line.
+Line in green
+```
 
 If you need mixed coloring then this is an example that will add a new line with several different colored words (tested on Windows):
 
 ```pascal
 procedure TForm1.Button3Click(Sender: TObject);
-    procedure AddColorStr(s: string; const col: TColor = clBlack; const NewLine: boolean = true);
-    begin
-      with RichMemo1 do
+  procedure AddColorStr(s: string; const col: TColor = clBlack; const NewLine: boolean = true);
+  begin
+    with RichMemo1 do
       begin
         if NewLine then
         begin
@@ -675,7 +711,7 @@ procedure TForm1.Button3Click(Sender: TObject);
         SelStart  := Length(Text);
         SelText   := '';
       end;
-    end;
+  end;
 begin
   AddColorStr('Black, ');
   AddColorStr('Green, ', clGReen, false);
@@ -730,13 +766,13 @@ RichMemo without Theme patch
 
 RichMemo with Theme
 
-- [RichEdit](https://msdn.microsoft.com/en-us/library/windows/desktop/bb787605%28v=vs.85%29.aspx) is used as system widgetset. The latest known .dll is loaded and initialized on start. Please note that RichEdit 1.0 would not support most of the features.
-- The internal wrapper of RichEditManager is provided in order to be compatible with Win 9x. However, it was never tried or tested. It's also expected that TOM object could be wrapped as one of the RichEditManager implementation. However, having the "manager" in place could be removed completely.
-- According to the internet, RichEdit control was not updated by Microsoft to support Theme drawing (since XP and up to Windows 8.1). Thus, RichEdit might always look like an old Win9x 3d-framed control. Based on the patch provided at the [issue](http://bugs.freepascal.org/view.php?id=25111%7Creported) a way to override [WM_NCPAINT](https://msdn.microsoft.com/en-us/library/windows/desktop/dd145212%28v=vs.85%29.aspx) method was introduced in r4153.
+- [`RichEdit`](https://msdn.microsoft.com/en-us/library/windows/desktop/bb787605%28v=vs.85%29.aspx) is used as system widgetset. The latest known `.dll` is loaded and initialized on start. Please note that `RichEdit` 1.0 would not support most of the features.
+- The internal wrapper of RichEditManager is provided in order to be compatible with Win 9x. However, it was never tried or tested. It's also expected that TOM object could be wrapped as one of the `RichEditManager` implementation. However, having the "manager" in place could be removed completely.
+- According to the internet, `RichEdit` control was not updated by Microsoft to support Theme drawing (since XP and up to Windows 8.1). Thus, `RichEdit` might always look like an old Win9x 3d-framed control. Based on the patch provided at the [issue](http://bugs.freepascal.org/view.php?id=25111%7Creported) a way to override [WM_NCPAINT](https://msdn.microsoft.com/en-us/library/windows/desktop/dd145212%28v=vs.85%29.aspx) method was introduced in r4153.
 
-Win32RichMemo provides a global variable NCPaint. It's a handler of non-client area drawing. By default, it attempts to draw themed border (see Win32RichMemo.ThemedNCPaint for implementation). It provides good results on Windows XP themes, but later themes (where animations are used), the results are not so great and should be updated.
+`Win32RichMemo` provides a global variable NCPaint. It's a handler of non-client area drawing. By default, it attempts to draw themed border (see `Win32RichMemo.ThemedNCPaint` for implementation). It provides good results on Windows XP themes, but later themes (where animations are used), the results are not so great and should be updated.
 
-In order to let system do NCPaint only (i.e. LCL implementation is causing issues or new windows updated RichEdit to draw borders properly), you can change NCPaint value at runtime, resetting it to nil
+In order to let system do `NCPaint` only (i.e. LCL implementation is causing issues or new windows updated RichEdit to draw borders properly), you can change `NCPaint` value at runtime, resetting it to nil
 
 ```pascal
 uses
@@ -744,13 +780,13 @@ uses
 
 initialization
   {$ifdef WINDOWS}
-  Win32RichMemo.NCPaint:=nil;
+  Win32RichMemo.NCPaint := nil;
   {$endif}
 ```
 
-You can also provide your own implementation of NCPaint. However, if you implement proper animated theme drawing, please provide patch.
+You can also provide your own implementation of `NCPaint`. However, if you implement proper animated theme drawing, please provide patch.
 
-The behavior is Windows implementation specific and should not (and will not be) part of RichMemo interface.
+The behavior is Windows implementation specific and should not (and will not be) part of `RichMemo` interface.
 
 There's additional information about Windows RICHEDIT that can be found at:
 
@@ -758,21 +794,21 @@ There's additional information about Windows RICHEDIT that can be found at:
 
 ### Gtk2
 
-- [GtkTextView](https://developer.gnome.org/gtk2/stable/GtkTextView.html) is used as system widgetset
+- [`GtkTextView`](https://developer.gnome.org/gtk2/stable/GtkTextView.html) is used as system widgetset
 - Sub and Superscript are not supported natively, an extra code is implemented in gtk2richmemo in order to implement them.
 - Bulletin and numbered lists are emulated.
 
 #### 2.1.0 (trunk/later)
 
-Gtk2 internal functions got changes. Specifically function GetWidgetInfo was modified, making RichMemo to fail on compilation.
+Gtk2 internal functions got changes. Specifically function GetWidgetInfo was modified, making `RichMemo` to fail on compilation.
 
-in order to adapt the change **RMLCLTRUNK** must be defined. It can be easily specified using **richmemopackage** compiler options.
+in order to adapt the change **`RMLCLTRUNK`** must be defined. It can be easily specified using **`richmemopackage`** compiler options.
 
 [![rmlcltrunkdefine.png](https://wiki.freepascal.org/images/6/60/rmlcltrunkdefine.png)](https://wiki.freepascal.org/File:rmlcltrunkdefine.png)
 
 ### Gtk3
 
-The APIs between Gtk2 and [Gtk3](https://developer.gnome.org/gtk3/stable/GtkTextView.html) are not really different. The major difference is in painting. For Gtk3 Cairo canvas is heavily used. The only area it affects is "Internals". IF any one wants to contribute Gtk2 implementation - please create separate gtk3richmemoXXX units. No {$ifdefs} should be created in gtk2 units.
+The APIs between Gtk2 and [Gtk3](https://developer.gnome.org/gtk3/stable/GtkTextView.html) are not really different. The major difference is in painting. For Gtk3 Cairo canvas is heavily used. The only area it affects is "Internals". IF any one wants to contribute Gtk2 implementation - please create separate `gtk3richmemoXXX` units. No {$ifdefs} should be created in gtk2 units.
 
 ### Cocoa
 
@@ -781,22 +817,22 @@ The APIs between Gtk2 and [Gtk3](https://developer.gnome.org/gtk3/stable/GtkText
 
 #### Lazarus 1.8 and earlier
 
-You need to add a define RMLCL18 for the package compilation.
+You need to add a define `RMLCL18` for the package compilation.
 
 ### Qt
 
-- [QTextEdit](http://doc.qt.io/qt-4.8/qtextedit.html) widget is used. Current C-mappings for Qt are missing a lot of RichText APIs, thus full implementation is currently impossible.
+- [`QTextEdit`](http://doc.qt.io/qt-4.8/qtextedit.html) widget is used. Current C-mappings for Qt are missing a lot of RichText APIs, thus full implementation is currently impossible.
 - The following classes need to be mapped to C-functions:
-  - [QTextBlockFormatH](http://doc.qt.io/qt-4.8/qtextblockformat.html) needed for paragraphs alignments (such as paragraph indents, line spacing and tabs). QTextEdit only exposes paragraph alignment.
-  - [QTextCharFormatH](http://doc.qt.io/qt-4.8/qtextcharformat.html) needed for additional character formatting (i.e. vertical alignment, links support). QTextEdit only exposes font styles.
+  - [`QTextBlockFormatH`](http://doc.qt.io/qt-4.8/qtextblockformat.html) needed for paragraphs alignments (such as paragraph indents, line spacing and tabs). `QTextEdit` only exposes paragraph alignment.
+  - [`QTextCharFormatH`](http://doc.qt.io/qt-4.8/qtextcharformat.html) needed for additional character formatting (i.e. vertical alignment, links support). `QTextEdit` only exposes font styles.
 
 ## See also
 
-- [RichMemo/Features](https://wiki.freepascal.org/RichMemo/Features "RichMemo/Features") \- Comments on some features in progress.
-- [RichMemo/WorkArounds](https://wiki.freepascal.org/RichMemo/WorkArounds "RichMemo/WorkArounds") \- Some notes about features not yet complete.
-- [RichMemo/Defines](https://wiki.freepascal.org/RichMemo/Defines "RichMemo/Defines") \- Additional package switches that allow to resolve compiling/runtime issues.
-- [RichMemo/Samples](https://wiki.freepascal.org/RichMemo/Samples "RichMemo/Samples") \- More examples.
-- [RichMemo/FAQ](https://wiki.freepascal.org/RichMemo/FAQ "RichMemo/FAQ") \- Frequently (Forum) Asked Questions
-- [MyNotex](https://sites.google.com/site/mynotex/) \- Application which uses modified by Massimo Nardello RichMemo package on Linux-Gtk2.
+- [RichMemo/Features](https://wiki.freepascal.org/RichMemo/Features "RichMemo/Features") - Comments on some features in progress.
+- [RichMemo/WorkArounds](https://wiki.freepascal.org/RichMemo/WorkArounds "RichMemo/WorkArounds") - Some notes about features not yet complete.
+- [RichMemo/Defines](https://wiki.freepascal.org/RichMemo/Defines "RichMemo/Defines") - Additional package switches that allow to resolve compiling/runtime issues.
+- [RichMemo/Samples](https://wiki.freepascal.org/RichMemo/Samples "RichMemo/Samples") - More examples.
+- [RichMemo/FAQ](https://wiki.freepascal.org/RichMemo/FAQ "RichMemo/FAQ") - Frequently (Forum) Asked Questions
+- [MyNotex](https://sites.google.com/site/mynotex/) - Application which uses modified by Massimo Nardello RichMemo package on Linux-Gtk2.
 - [TMemo](https://wiki.freepascal.org/TMemo "TMemo")
 - [KMemo control](https://wiki.freepascal.org/KControls#KMemo_control "KControls")
