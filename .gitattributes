@@ -31,6 +31,9 @@ autocrlf=true
 *.lua text eol=lf
 *.sh text eol=lf
 *.py text eol=lf
+*.go text eol=lf
+*.r text eol=lf
+*.ruby text eol=lf
 # config
 *.json text eol=lf
 *.yml text eol=lf
