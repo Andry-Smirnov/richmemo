@@ -1,12 +1,12 @@
-unit qt5richmemo;
+unit qt6richmemo;
 
 interface
-
+{$ifdef LCLQt6}
 {$mode delphi}
 
-{$define RMQT5_TEXTFORMATS} // the feature is available in Qt5 Trunk
-                            // it allows to query Qt5TextEdit for character formats array
-{$ifdef RMQT5_NOTEXTFORMATS}{$undef RMQT5_TEXTFORMATS}{$endif}
+{$define RMQT6_TEXTFORMATS} // the feature is available in Qt6 Trunk
+                            // it allows to query Qt6TextEdit for character formats array
+{$ifdef RMQT6_NOTEXTFORMATS}{$undef RMQT6_TEXTFORMATS}{$endif}
 
 //
 // Following class methods are need for the implementation
@@ -14,7 +14,7 @@ interface
 //  QTextBlockFormatH
 uses
   LCLType, Controls, StdCtrls, Graphics,
-  qt5, qtobjects, qtwidgets, qtprivate,
+  qt6, qtobjects, qtwidgets, qtprivate,
   WSProc,
   RichMemo, WSRichMemo;
 
@@ -147,14 +147,13 @@ begin
   ws:='';
   QTextEdit_fontFamily(w, @ws);
 
-  //  if no text formats entered, the default edit control holds the format
   if ws='' then
     begin
       qfh:=QFont_Create();
       QApplication_font(qfh, w);
       QFont_family(qfh, @ws);
       Params.Size := QFont_pointSize(qfh);
-      if QFont_weight(qfh)>=Ord(QFontBold) then Include(Params.Style, fsBold);
+      if QFont_weight(qfh)>=QtFontWeight_Bold then Include(Params.Style, fsBold);
       if QFont_italic(qfh) then Include(Params.Style, fsItalic);
       if QFont_underline(qfh) then Include(Params.Style, fsUnderline);
       QFont_Destroy(qfh);
@@ -162,7 +161,7 @@ begin
   else
     begin
       Params.Size:=round(QTextEdit_fontPointSize(w));
-      if QTextEdit_fontWeight(w)>=Ord(QFontBold) then Include(Params.Style, fsBold);
+      if QTextEdit_fontWeight(w)>=QtFontWeight_Bold then Include(Params.Style, fsBold);
       if QTextEdit_fontItalic(w) then Include(Params.Style, fsItalic);
       if QTextEdit_fontUnderline(w) then Include(Params.Style, fsUnderline);
     end;
@@ -196,7 +195,7 @@ var
   ws : WideString;
   clr: TQColor;
 const
-  QIsBold: array [Boolean] of Integer = (Ord(QFontNormal), Ord(QFontBold));
+  QIsBold: array [Boolean] of Integer = (QtFontWeight_Normal, QtFontWeight_Bold);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetTextAttributes') then
     Exit;
@@ -289,7 +288,8 @@ begin
   RangeLen:=0;
   Result:=false;
   rng:=nil;
-  {$ifndef RMQT5_TEXTFORMATS}
+
+  {$ifndef RMQT6_TEXTFORMATS}
   Exit;
   {$else}
 
@@ -370,4 +370,9 @@ begin
   te.setSelection(backup.selst, backup.sellen);
 end;
 
+{$else}
+implementation
+// dummy empty unit.
+{$endif}  //{$ifdef LCLQt6}
 end.
+
