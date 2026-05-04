@@ -8,7 +8,8 @@ unit richmemopackage;
 interface
 
 uses
-  RichMemoFactory, RichMemoRTF, RichMemoUtils, RichMemoHelpers, RTFParsPre211;
+  RichMemoFactory, RichMemoRTF, RichMemoUtils, RichMemoHelpers, RTFParsPre211, 
+  qt6richmemo;
 
 implementation
 
